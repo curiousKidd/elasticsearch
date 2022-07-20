@@ -44,12 +44,10 @@ PUT /books
 ```
 
 - 한번 만들어진 index는 같은 이름으로 생성 불가능하다.
-
 - number_of_shards는 index 생성 후 변경X
-
 - number_of_replicas 는 중간에 변경 O
 
-- ``` java
+ ``` java
 PUT books/_settings
 {
     "number_of_replicas": 0
