@@ -404,3 +404,136 @@ GET phones/_search
   }
 }
 ```
+
+# 2-4 데이터 색인과 텍스트 분석
+
+#### 역 인덱스 (Inverted index)
+
+#### 텍스트 분석 과정 (Text Analysis)
+
+- Tokenizer
+- Token Filter
+- _analyze API 를 이용한 분석 테스트
+
+#### 사용자 정의 analyzer
+
+#### 텍스트 필드에 analyzer 적용
+
+#### _termvectors API를 이용한 term 확인
+
+> https://esbook.kimjmin.net/06-text-analysis/6.1-indexing-data
+
+Elasticsearch는 문자열 필드가 저장될 때 데이터에서 검색어 토큰을 저장하기 위해 여러 단계의 처리 과정을 거칩니다. 이 전체 과정을 **텍스트 분석(Text Analysis)** 이라고 하고 이 과정을 처리하는 기능을 **애널라이저(Analyzer)** 라고 합니다.
+
+#### 1. 캐릭터 필터
+
+텍스트 데이터가 입력되면 **가장 먼저** 필요에 따라 **전체 문장에서 특정 문자를 대치하거나 제거**하는데 이 과정을 담당
+
+#### 2. 토크나이저
+
+다음으로는 문장에 속한 단어들을 **텀 단위**로 하나씩 **분리 해 내는 처리 과정**을 거치는데 이 과정을 담당하는 기능입니다.
+토크나이저는 **반드시 1개**만 적용이 가능합니다.
+다음은 **`whitespace`** 토크나이저를 이용해서 공백을 기준으로 텀 들을 분리 한 결과입니다.
+
+#### 3. 토큰 필터
+
+분리된 **텀** 들을 **하나씩 가공**하는 과정을 거칩니다.
+
+> 1. 여기서는 먼저 **`lowercase`** 토큰 필터를 이용해서 **대문자를 모두 소문자로** 바꿔줍니다.
+>    이렇게 하면 대소문자 구별 없이 검색이 가능하게 됩니다. 대소문자가 일치하게 되어 같은 텀이 된 토큰들은 모두 하나로 병합이 됩니다.
+
+https://github.com/slrslrr2/elasticsearch/blob/main/image-20220717174219888-8047345.png)
+
+> 1. **`stop`** 옵션을 통하여 **불용어를 제거**시킵니다
+>
+> 텀 중에는 검색어로서의 가치가 없는 단어들이 있는데 이런 단어를 **불용어(stopword)** 라고 합니다. 보통 **a, an, are, at, be, but, by, do, for, i, no, the, to …** 등의 단어들은 불용어로 간주되어 검색어 토큰에서 제외됩니다. `stop`토큰 필터를 적용하면 우리가 만드는 역 인덱스에서 **the**가 제거됩니다.
+
+`snowball`을 통해 형태소 분석 과정을 거쳐서 문법상 변형된 단어를 일반적으로 검색에 쓰이는 기본 형태로 변환해줍니다.
+
+[
+
+**`snowball`**을 통해 필요에 따라서는 **동의어**를 추가 해 주기도 합니다.
+
+### 사용자 정의 analyzer
+
+예제 1
+
+```
+PUT my_index2
+{
+  "mappings": {
+    "properties": {
+      "message": {
+        "type": "text",
+        "analyzer": "snowball" // mappings 정의
+      }
+    }
+  }
+}
+
+// my_index에 id 에 값 생성
+PUT my_index2/_doc/1
+{
+  "message": "The quick brown fox jumps over the lazy dog" 
+}
+
+GET my_index2/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "message": "jump"
+          }
+          
+        }
+      ]
+    }
+  }
+}
+```
+
+
+
+------
+
+# 2-5 노리(nori) 한글 형태소 분석기
+
+#### Token Filter 추가 설명
+
+#### Nori 설치
+
+- Elasticsearch-plugin install analysis-nori
+- _analyze API 를 이용한 한글 분석 테스트
+
+#### Nori 설정
+
+- user_dictionary_ruls를 이용한 사용자 사전 입력
+- decompound_mode : 합성어 저장 설정
+- Stoptags : Part Of Speech 품사 태그 지정
+- nori_readingform : 한자어 번역
+
+------
+
+> https://esbook.kimjmin.net/06-text-analysis/6.7-stemming/6.7.2-nori
+
+------
+
+| 구분1                     | 구분2          | game/gameserver | subject | content |
+| ------------------------- | -------------- | --------------- | ------- | ------- |
+| **char_filter**           | html_strip     | -               | -       | O       |
+|                           | mapping        | -               | -       | △       |
+|                           | 정규식         | -               | -       | -       |
+| **tokenizer**             | standard       |                 |         |         |
+|                           | Letter         | -               | -       | -       |
+|                           | Whitespace     | -               | -       | -       |
+|                           | UAX URL Email  | -               | -       | -       |
+|                           | Pattern        | -               | -       | -       |
+|                           | path_hierarchy | -               | -       | -       |
+| **filter** (token_filter) | Lowercase      | O               | O       | O       |
+|                           | uppercase      | -               | -       | -       |
+|                           | synonyms_path  | O               | -       | -       |
+|                           | **ngram**      | -               | O?      | O?      |
+|                           | **Edge NGram** | O               | -       | -       |
+|                           | unique         | -               | O       | O       |
