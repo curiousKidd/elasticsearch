@@ -143,6 +143,10 @@ POST _bulk
 {"field":"value two"}
 ```
 
+`bulk` 명령어의 경우 여러가지 데이터 처리를 한번에 처리 할 수 있다는 장점이 있다.
+본인은 이 명령어가 query를 통해서 list 데이터를 insert할 수 있을 줄 알았는데, 그런 류의 명령어는 아니었고
+해당 기능을 해보기 위헤서 검색하다 보니 나온 명령어가 `reindex` 였다
+
 ### index data 복사하기 (_reindex)
 
 Elasticsearch에서 reindex를 사용하기 위해서는 두가지 사항을 알고 있어야 한다.
