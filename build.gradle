@@ -8,6 +8,28 @@ group = 'my.project'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
+apply plugin: 'war'
+
+//War 생성관련 설정을 할 수 있습니다.
+//Name 과 Version, File Name 등을 설정할 수 있으며 따로
+//설정이 없다면 프로젝트명 + Version 이 붙어서 생성됩니다.
+
+bootWar {
+	launchScript()
+	archiveName("ib-elkutil.war")
+}
+
+bootJar {
+	launchScript()
+	archiveFileName = "ib-elkutil.jar"
+}
+
+bootWar.enabled = true
+
+dependencies {
+	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -24,8 +46,17 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	implementation 'co.elastic.clients:elasticsearch-java:8.3.2'
+	implementation 'org.elasticsearch.client:elasticsearch-rest-client:8.3.3'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.3'
+	implementation 'jakarta.json:jakarta.json-api:2.1.0'
+
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+
