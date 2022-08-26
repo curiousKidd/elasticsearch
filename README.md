@@ -758,3 +758,6 @@ GET my_index2/_search
 |                           | **ngram**      | -               | O?      | O?      |
 |                           | **Edge NGram** | O               | -       | -       |
 |                           | unique         | -               | O       | O       |
+
+![analyzer](https://user-images.githubusercontent.com/77770531/186872550-b5e67eb5-b713-4f6c-b636-93eaf8788c22.png)
+
