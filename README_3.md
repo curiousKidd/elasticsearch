@@ -1,21 +1,20 @@
 ## Logstash 설치 및 실행
 
 - Logstash 소개
-  - logstash 파이프라인 구조 설명
-  - Support Matrix 페이지에서 설치 가능한 환경 확인
+    - logstash 파이프라인 구조 설명
+    - Support Matrix 페이지에서 설치 가능한 환경 확인
 - Logstash 설치
-  - Logstash 다운로드
-  - logstash 실행 가능 옵션 설명 : -e | -f
+    - Logstash 다운로드
+    - logstash 실행 가능 옵션 설명 : -e | -f
 - Logstash 실행
-  - Input {} output {} 입/출력 파이프라인 설정
-  - 입력 : stdin 표준 입력, tcp 네트워크 입력
-  - 출력 : stdout 표준 출력, elasticsearch 출력
-  - Elasticsearch 에 데이터 입력된 것 확인
+    - Input {} output {} 입/출력 파이프라인 설정
+    - 입력 : stdin 표준 입력, tcp 네트워크 입력
+    - 출력 : stdout 표준 출력, elasticsearch 출력
+    - Elasticsearch 에 데이터 입력된 것 확인
 
 ## Logstash란?
 
-아래 그림처럼 **Beats**와 함께 로그 수집부분을 담당하고있다.
-
+아래 그림처럼 **Beats**와 함께 로그 수집부분을 담당하고있다.  
 Logstash와 Beats의 차이점은 **Logstash**의 경우 파이프라인 기능을 통해 들어오는 **데이터를 다양하게 가공**할 수 있다.
 **Beats**의 경우 **Logstash 보다 데이터를 가볍게 수집**한다고 생각하면 된다.
 
@@ -56,7 +55,7 @@ Logstash의 경우 실행할 때, 꼭 파이프라인을 명시해주어야한�
   ```
 
 1. 실행하면서 파이프라인 적는방법
-   - -e : Set Configurations in command line
+    - -e : Set Configurations in command line
 
 ```
 # Mac, Unix & Linux
@@ -68,41 +67,42 @@ bin/logstash.bat -e 'input { stdin {} } output { stdout {} }'
 
 1. pipeline.conf 파일을 실행하는 방법
 
-   - -f : If configurations are set in a file (ex. Pipeline.conf)
-   - 
+    - -f : If configurations are set in a file (ex. Pipeline.conf)
+    -
 
    ```
    bin/logstash -f pipeline.conf
    ```
 
-   - pipeline.conf
+    - pipeline.conf
 
-     ```
-     input {
-     	tcp {
-     		port => 9900 #9900 포트로 오는 데이터들을 수집한다.
-     	}
-     }
-     
-     output {
-     	# stdout {}
-     	elasticsearch {
-     		hosts => ["localhost:9200"] # 9200 elasticsearch로 output한다.
-     	}
-     }
-     ```
+      ```
+      input {
+          tcp {
+              port => 9900 #9900 포트로 오는 데이터들을 수집한다.
+          }
+      }
+      
+      output {
+          # stdout {}
+          elasticsearch {
+              hosts => ["localhost:9200"] # 9200 elasticsearch로 output한다.
+          }
+      }
+      ```
 
-   - 결과
+    - 결과
 
-     - 9200 elasticsearch로 받을 수 있으므로 아래과 같이 명령어를 날린다.
+        - 9200 elasticsearch로 받을 수 있으므로 아래과 같이 명령어를 날린다.
 
-     - ```
+        - ```
        echo 'Hello Logstash' | nc localhost 9900
        ```
 
-     - 그럼 kibana에서 결과 확인해보면 아래와 같다
+        - 그럼 kibana에서 결과 확인해보면 아래와 같다
 
-     - [![image-20220731185938195](https://user-images.githubusercontent.com/58017318/182023568-0c44b428-d29e-44b2-b23d-d21578d524f2.png)](https://user-images.githubusercontent.com/58017318/182023568-0c44b428-d29e-44b2-b23d-d21578d524f2.png) - 그림과 같이 logstash~~라는 index가 생성되었고 - message라는 필드로 전송된 값이 들어갔다.
+        - [![image-20220731185938195](https://user-images.githubusercontent.com/58017318/182023568-0c44b428-d29e-44b2-b23d-d21578d524f2.png)](https://user-images.githubusercontent.com/58017318/182023568-0c44b428-d29e-44b2-b23d-d21578d524f2.png)
+          - 그림과 같이 logstash~~라는 index가 생성되었고 - message라는 필드로 전송된 값이 들어갔다.
 
 > https://www.youtube.com/watch?v=E3CSlX--6Cc&list=PLhFRZgJc2afp0gaUnQf68kJHPXLG16YCf&index=23
 
@@ -111,13 +111,13 @@ bin/logstash.bat -e 'input { stdin {} } output { stdout {} }'
 # Logstash filter 설정
 
 - Config 변경시 logstash 자동 재시작 설정
-  - config/logstash.yml 에서 config.reload.automatic: true로 바꾸면 logstash를 재시작 안해도된다.
+    - config/logstash.yml 에서 config.reload.automatic: true로 바꾸면 logstash를 재시작 안해도된다.
 - 아파치 웹 로그 수집을 위한 filter 설정
-  - grok : 메시지 스트림 파싱
-  - geoip : IP주소에서 위치 및 지역정보 확장
-  - useragent : 클라이언트 OS 및 브라우저 정보 확장
-  - mutate : 불필요한 필드 삭제 및 타입 변환
-  - date : 문자열로 된 날짜를 date 타입으로 변환
+    - grok : 메시지 스트림 파싱
+    - geoip : IP주소에서 위치 및 지역정보 확장
+    - useragent : 클라이언트 OS 및 브라우저 정보 확장
+    - mutate : 불필요한 필드 삭제 및 타입 변환
+    - date : 문자열로 된 날짜를 date 타입으로 변환
 
 ## 아파치 웹 로그 수집을 위한 filter 설정
 
