@@ -2,6 +2,6 @@ package my.project.elk.service;
 
 public interface ElkService {
 
-    void getList();
+    void getList(String keyword);
 
 }

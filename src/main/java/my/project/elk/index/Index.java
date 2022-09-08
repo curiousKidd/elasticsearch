@@ -18,15 +18,11 @@ import java.util.stream.Collectors;
 public class Index {
     private final RestClient restClient;
 
-    public String getIndexLast(String tranType) throws IOException {
+    public String getIndex() throws IOException {
         String indexName = "";
         Request request = null;
 
-        if ("S".equals(tranType)) {
-            request = new Request("GET", "/_cat/indices/baygle_item_sell*?s=index:desc&h=index,health");
-        } else {
-            request = new Request("GET", "/_cat/indices/baygle_item_buy*?s=index:desc&h=index,health");
-        }
+        request = new Request("GET", "/_cat/indices/Index*?s=index:desc&h=index,health");
 
         Response response = restClient.performRequest(request);
 
